@@ -1,1581 +1,1164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nourhan Haydar | Art Atelier</title>
+    <title>سكانر المنتجات مع جدول تفاعلي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
-        /* Modern Color Palette */
-        :root {
-            --primary: #9A7B8C; /* Muted Lavender */
-            --secondary: #C4A69D; /* Dusty Rose */
-            --accent: #E8C8B0; /* Soft Peach */
-            --light: #F7F3F0; /* Cream White */
-            --dark: #5D4E60; /* Deep Purple */
-            --text: #333333;
-            --success: #8BA888; /* Sage Green */
-            --shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-        
+        /* الأساسيات */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #2d936c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 10px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
-        /* Header & Navigation */
+        /* الهيدر */
         header {
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            padding: 15px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
-        .header-container {
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
         
         .logo i {
-            color: var(--primary);
-            font-size: 1.9rem;
+            font-size: 1.8rem;
         }
         
-        .logo span {
-            background: linear-gradient(45deg, var(--primary), var(--dark));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        nav ul {
+        /* التنقل الرئيسي */
+        .nav-tabs {
             display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-        
-        nav a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 30px;
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        nav a:hover, nav a.active {
-            color: var(--light);
-            background-color: var(--primary);
-        }
-        
-        .nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--dark);
-            cursor: pointer;
-        }
-        
-        /* Main Content */
-        main {
-            flex: 1;
-            margin-top: 90px;
-            max-width: 1200px;
-            width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 0 20px 40px;
-        }
-        
-        .page {
-            display: none;
-            animation: fadeIn 0.6s ease;
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            position: relative;
-        }
-        
-        .page-header h2 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-        
-        .page-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            border-radius: 2px;
-        }
-        
-        /* Gallery Page */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .artwork {
-            background: white;
-            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+            margin-top: 5px;
         }
         
-        .artwork:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-        
-        .artwork-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .artwork:hover .artwork-img {
-            transform: scale(1.05);
-        }
-        
-        .artwork-info {
-            padding: 20px;
+        .tab-btn {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .artwork-title {
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .artwork-desc {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 15px;
-            flex: 1;
-        }
-        
-        .artwork-price {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-top: auto;
-        }
-        
-        /* About Page */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
-        
-        .artist-img-container {
-            position: relative;
-        }
-        
-        .artist-img {
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-        
-        .artist-badge {
-            position: absolute;
-            bottom: -15px;
-            right: -15px;
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: var(--shadow);
-        }
-        
-        .artist-badge span:first-child {
-            font-size: 1.8rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-        
-        .artist-badge span:last-child {
-            font-size: 0.8rem;
-            margin-top: 2px;
-        }
-        
-        .artist-info h3 {
-            color: var(--dark);
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .artist-info h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background-color: var(--primary);
-        }
-        
-        .artist-info p {
-            margin-bottom: 20px;
-            color: #555;
-        }
-        
-        .artist-stats {
-            display: flex;
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-number {
-            display: block;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: #777;
-        }
-        
-        /* Services Page */
-        .services-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .service-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: var(--transition);
-        }
-        
-        .service-card:hover {
-            transform: translateY(-10px);
-            background: linear-gradient(135deg, var(--light), white);
-        }
-        
-        .service-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        
-        .service-card h3 {
-            color: var(--dark);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        /* Contact Page */
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-        
-        .contact-info {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .contact-icon {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.2rem;
-        }
-        
-        .contact-details h4 {
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-        
-        .whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #25D366;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 10px;
-            transition: var(--transition);
-        }
-        
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
-        }
-        
-        .contact-form {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark);
-            font-weight: 500;
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: var(--transition);
-            background-color: #f9f9f9;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            background-color: white;
-            box-shadow: 0 0 0 3px rgba(154, 123, 140, 0.1);
-        }
-        
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--dark));
-            color: white;
+            padding: 10px 15px;
+            background: transparent;
             border: none;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 1rem;
+            color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
         }
         
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(93, 78, 96, 0.2);
+        .tab-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
-        /* Login Page */
-        .login-container {
-            max-width: 450px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
+        .tab-btn.active {
+            background-color: rgba(255, 255, 255, 0.3);
         }
         
-        .social-login {
-            display: flex;
-            gap: 15px;
-            margin: 25px 0;
-        }
-        
-        .social-btn {
+        /* المحتوى الرئيسي */
+        .container {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background: white;
             display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .tab-content.active {
+            display: flex;
+        }
+        
+        /* قسم الماسح الضوئي */
+        .scanner-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .scanner-container {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: var(--transition);
+            gap: 20px;
         }
         
-        .social-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid var(--border-color);
         }
         
-        .divider {
-            text-align: center;
-            margin: 25px 0;
-            position: relative;
-        }
-        
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 45%;
-            height: 1px;
-            background: #ddd;
-        }
-        
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 0;
-            width: 45%;
-            height: 1px;
-            background: #ddd;
-        }
-        
-        .form-footer {
-            text-align: center;
-            margin-top: 25px;
-            font-size: 0.9rem;
-        }
-        
-        .form-footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        /* Shop Page */
-        .shop-intro {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            color: #666;
-        }
-        
-        .filters {
+        .scanner-controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 30px;
             flex-wrap: wrap;
         }
         
-        .filter-btn {
-            padding: 10px 20px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        /* Blog Page */
-        .blog-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .blog-post {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
+        /* قسم الجدول */
+        .sheet-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
             box-shadow: var(--shadow);
-            transition: var(--transition);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
-        .blog-post:hover {
-            transform: translateY(-10px);
-        }
-        
-        .blog-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        
-        .blog-content {
-            padding: 25px;
-        }
-        
-        .blog-meta {
+        .sheet-header {
             display: flex;
             justify-content: space-between;
-            color: #888;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
-        .blog-title {
-            color: var(--dark);
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+        .sheet-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
         
-        /* Footer */
-        footer {
-            background: var(--dark);
+        /* عناصر التحكم */
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
             color: white;
-            padding: 50px 0 20px;
-            margin-top: 60px;
         }
         
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
         }
         
-        .footer-col h3 {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background-color: #218c68;
+        }
+        
+        /* الجدول */
+        .table-container {
+            overflow-x: auto;
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: var(--dark-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        td.editable {
+            cursor: text;
             position: relative;
-            padding-bottom: 10px;
         }
         
-        .footer-col h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
+        td.editable:focus {
+            outline: 2px solid var(--primary-color);
+            background-color: white;
         }
         
-        .footer-links {
-            list-style: none;
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
         }
         
-        .footer-links li {
-            margin-bottom: 12px;
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--dark-color);
+            transition: color 0.3s;
         }
         
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
-            transition: var(--transition);
+        .action-btn.edit:hover {
+            color: var(--primary-color);
         }
         
-        .footer-links a:hover {
-            color: var(--accent);
-            padding-left: 5px;
+        .action-btn.delete:hover {
+            color: var(--danger-color);
         }
         
-        .social-links {
+        /* قسم المشاركة */
+        .share-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .share-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .share-options {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            flex-wrap: wrap;
         }
         
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 50%;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-5px);
-        }
-        
-        .newsletter-form {
+        .share-link {
             display: flex;
-            margin-top: 20px;
-        }
-        
-        .newsletter-form input {
+            gap: 10px;
+            align-items: center;
             flex: 1;
-            border-radius: 30px 0 0 30px;
-            padding: 0 20px;
-            border: none;
+            min-width: 250px;
         }
         
-        .newsletter-form button {
-            border-radius: 0 30px 30px 0;
-            padding: 0 20px;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            margin-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
+        .share-link input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             font-size: 0.9rem;
         }
         
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
+        /* الفوتر */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 20px;
         }
         
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                gap: 10px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .nav-toggle {
-                display: block;
-                position: absolute;
-                top: 20px;
-                right: 20px;
-            }
-            
-            nav {
-                width: 100%;
-                display: none;
-            }
-            
-            nav.active {
-                display: block;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                padding: 20px 0;
-            }
-            
-            main {
-                margin-top: 130px;
-            }
-            
-            .gallery, .services-container, .blog-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .artist-stats {
-                justify-content: center;
-            }
-            
-            .page-header h2 {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .login-container, .contact-info, .contact-form {
-                padding: 20px;
-            }
-            
-            .artist-stats {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .social-login {
-                flex-direction: column;
-            }
-        }
-        
-        /* Utility Classes */
+        /* رسائل */
         .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             display: none;
         }
         
         .message.success {
-            background-color: rgba(139, 168, 136, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
         }
         
         .message.error {
-            background-color: rgba(255, 0, 0, 0.05);
-            color: #d32f2f;
-            border: 1px solid #f44336;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+            }
+            
+            .sheet-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+                min-width: 140px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .share-options {
+                flex-direction: column;
+            }
+            
+            .share-link {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .scanner-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .scanner-controls .btn {
+                width: 100%;
+            }
+            
+            .tab-btn {
+                padding: 10px 5px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(45, 147, 108, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(45, 147, 108, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(45, 147, 108, 0); }
+        }
+        
+        .highlight {
+            background-color: #fff3cd !important;
+            transition: background-color 1.5s;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="header-container">
+        <div class="header-top">
             <div class="logo">
-                <i class="fas fa-palette"></i>
-                <span>Nourhan Haydar</span>
+                <i class="fas fa-shopping-cart"></i>
+                <span>سكانر المنتجات المتكامل</span>
             </div>
-            
-            <button class="nav-toggle" id="navToggle">
-                <i class="fas fa-bars"></i>
+            <div class="controls">
+                <button class="btn btn-accent" id="clearAllBtn">
+                    <i class="fas fa-trash-alt"></i> مسح الكل
+                </button>
+                <button class="btn btn-success" id="exportBtn">
+                    <i class="fas fa-file-export"></i> تصدير الجدول
+                </button>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="scanner-tab">
+                <i class="fas fa-camera"></i> الماسح الضوئي
             </button>
-            
-            <nav id="mainNav">
-                <ul>
-                    <li><a href="#" class="nav-link active" data-page="home">Gallery</a></li>
-                    <li><a href="#" class="nav-link" data-page="about">About</a></li>
-                    <li><a href="#" class="nav-link" data-page="services">Services</a></li>
-                    <li><a href="#" class="nav-link" data-page="shop">Shop</a></li>
-                    <li><a href="#" class="nav-link" data-page="blog">Blog</a></li>
-                    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
-                    <li><a href="#" class="nav-link" data-page="login">Login</a></li>
-                </ul>
-            </nav>
+            <button class="tab-btn" data-tab="sheet-tab">
+                <i class="fas fa-table"></i> الجدول التفاعلي
+            </button>
+            <button class="tab-btn" data-tab="share-tab">
+                <i class="fas fa-share-alt"></i> مشاركة الجدول
+            </button>
         </div>
     </header>
     
-    <!-- Main Content -->
-    <main>
-        <!-- Gallery Page -->
-        <section id="home" class="page active">
-            <div class="page-header">
-                <h2>Art Gallery</h2>
-                <p>Explore the collection of original artworks by Nourhan Haydar</p>
-            </div>
-            
-            <div class="gallery" id="galleryContainer">
-                <!-- Artworks will be loaded here via JavaScript -->
-            </div>
-        </section>
+    <div class="container">
+        <!-- رسائل النظام -->
+        <div class="message" id="message"></div>
         
-        <!-- About Page -->
-        <section id="about" class="page">
-            <div class="page-header">
-                <h2>About the Artist</h2>
-                <p>Get to know Nourhan Haydar and her artistic journey</p>
-            </div>
-            
-            <div class="about-content">
-                <div class="artist-img-container">
-                    <img src="https://j.top4top.io/p_3667zsqet1.jpg" alt="Nourhan Haydar" class="artist-img">
-                    <div class="artist-badge">
-                        <span>7+</span>
-                        <span>Years</span>
-                    </div>
-                </div>
+        <!-- تبويب الماسح الضوئي -->
+        <div class="tab-content active" id="scanner-tab">
+            <div class="scanner-section">
+                <h2><i class="fas fa-qrcode"></i> مسح المنتجات بالكاميرا</h2>
+                <p>استخدم الكاميرا لمسح رموز المنتجات (باركود، QR كود) وسيتم إضافتها تلقائياً إلى الجدول.</p>
                 
-                <div class="artist-info">
-                    <h3>Nourhan Haydar</h3>
-                    <p>Visual artist specializing in contemporary paintings that blend traditional techniques with modern expression. Graduated from the Fine Arts Academy in 2016 with honors.</p>
-                    <p>My work explores the intersection of nature, emotion, and abstract forms, creating visual narratives that invite viewers to explore their own interpretations.</p>
-                    <p>I've participated in over 20 exhibitions locally and internationally, with works featured in private collections across three continents.</p>
+                <div class="scanner-container">
+                    <div id="reader" class="pulse"></div>
                     
-                    <div class="artist-stats">
-                        <div class="stat">
-                            <span class="stat-number">150+</span>
-                            <span class="stat-label">Artworks</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">20+</span>
-                            <span class="stat-label">Exhibitions</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">12</span>
-                            <span class="stat-label">Awards</span>
-                        </div>
+                    <div class="scanner-controls">
+                        <button class="btn btn-primary" id="startScannerBtn">
+                            <i class="fas fa-play"></i> تشغيل الماسح
+                        </button>
+                        <button class="btn btn-danger" id="stopScannerBtn">
+                            <i class="fas fa-stop"></i> إيقاف الماسح
+                        </button>
+                        <button class="btn btn-accent" id="addManualBtn">
+                            <i class="fas fa-plus"></i> إضافة يدويًا
+                        </button>
                     </div>
                 </div>
+                
+                <div id="scannerResult" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
             </div>
-        </section>
+            
+            <div class="sheet-section">
+                <div class="sheet-header">
+                    <div class="sheet-title">المنتجات المضافة حديثاً</div>
+                    <div class="controls">
+                        <button class="btn btn-primary" id="addRowBtn">
+                            <i class="fas fa-plus"></i> إضافة صف
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="20%">رمز المنتج</th>
+                                <th width="25%">اسم المنتج</th>
+                                <th width="15%">السعر</th>
+                                <th width="15%">الكمية</th>
+                                <th width="15%">المجموع</th>
+                                <th width="10%">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- الصفوف ستضاف هنا ديناميكياً -->
+                            <tr>
+                                <td>1</td>
+                                <td class="editable" data-field="code">123456789012</td>
+                                <td class="editable" data-field="name">منتج تجريبي</td>
+                                <td class="editable" data-field="price">10.00</td>
+                                <td class="editable" data-field="quantity">2</td>
+                                <td data-field="total">20.00</td>
+                                <td class="actions-cell">
+                                    <button class="action-btn edit" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         
-        <!-- Services Page -->
-        <section id="services" class="page">
-            <div class="page-header">
-                <h2>Art Services</h2>
-                <p>Professional art services tailored to your needs</p>
+        <!-- تبويب الجدول التفاعلي -->
+        <div class="tab-content" id="sheet-tab">
+            <div class="sheet-section">
+                <div class="sheet-header">
+                    <div class="sheet-title">جدول المنتجات الكامل</div>
+                    <div class="controls">
+                        <button class="btn btn-primary" id="addRowSheetBtn">
+                            <i class="fas fa-plus"></i> إضافة صف
+                        </button>
+                        <button class="btn btn-success" id="calculateTotalBtn">
+                            <i class="fas fa-calculator"></i> حساب الإجمالي
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="fullSheetTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="15%">رمز المنتج</th>
+                                <th width="25%">اسم المنتج</th>
+                                <th width="15%">الفئة</th>
+                                <th width="10%">السعر</th>
+                                <th width="10%">الكمية</th>
+                                <th width="10%">المجموع</th>
+                                <th width="10%">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullSheetBody">
+                            <!-- سيتم ملؤه بنفس بيانات productsTable -->
+                        </tbody>
+                        <tfoot id="tableFooter">
+                            <tr>
+                                <td colspan="6" style="text-align: left; font-weight: 700;">المجموع الكلي:</td>
+                                <td id="grandTotal" style="font-weight: 700;">0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
-            
-            <div class="services-container">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <h3>Custom Commissions</h3>
-                    <p>Personalized artwork created specifically for your space, style, and vision.</p>
-                </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <h3>Art Consultation</h3>
-                    <p>Professional guidance on selecting and placing art in residential or commercial spaces.</p>
-                </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <h3>Art Workshops</h3>
-                    <p>Group and private art lessons for all skill levels, from beginners to advanced artists.</p>
-                </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-shipping-fast"></i>
-                    </div>
-                    <h3>Art Delivery & Installation</h3>
-                    <p>Safe delivery and professional installation of purchased artworks.</p>
-                </div>
-            </div>
-        </section>
+        </div>
         
-        <!-- Shop Page -->
-        <section id="shop" class="page">
-            <div class="page-header">
-                <h2>Art Shop</h2>
-                <p>Original artworks, prints, and merchandise available for purchase</p>
-            </div>
-            
-            <p class="shop-intro">Browse and purchase original artworks, limited edition prints, and art merchandise. Each piece comes with a certificate of authenticity.</p>
-            
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">All Works</button>
-                <button class="filter-btn" data-filter="original">Originals</button>
-                <button class="filter-btn" data-filter="print">Prints</button>
-                <button class="filter-btn" data-filter="merchandise">Merchandise</button>
-            </div>
-            
-            <div class="gallery" id="shopContainer">
-                <!-- Shop items will be loaded here via JavaScript -->
-            </div>
-        </section>
-        
-        <!-- Blog Page -->
-        <section id="blog" class="page">
-            <div class="page-header">
-                <h2>Art Blog</h2>
-                <p>Insights, tutorials, and updates from the studio</p>
-            </div>
-            
-            <div class="blog-container">
-                <div class="blog-post">
-                    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Color Theory" class="blog-img">
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> May 15, 2023</span>
-                            <span><i class="far fa-clock"></i> 5 min read</span>
-                        </div>
-                        <h3 class="blog-title">Mastering Color Theory in Contemporary Art</h3>
-                        <p>Exploring how color relationships can transform the emotional impact of your artwork.</p>
-                    </div>
-                </div>
+        <!-- تبويب المشاركة -->
+        <div class="tab-content" id="share-tab">
+            <div class="share-section">
+                <h2><i class="fas fa-share-alt"></i> مشاركة جدول المنتجات</h2>
+                <p>يمكنك مشاركة جدول المنتجات مع الآخرين عن طريق الروابط التالية:</p>
                 
-                <div class="blog-post">
-                    <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w-800&q=80" alt="Studio Setup" class="blog-img">
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> April 28, 2023</span>
-                            <span><i class="far fa-clock"></i> 7 min read</span>
+                <div class="share-controls">
+                    <div class="share-options">
+                        <div class="share-link">
+                            <input type="text" id="jsonLink" readonly value="سيتم إنشاء الرابط بعد حفظ الجدول">
+                            <button class="btn btn-primary" id="copyJsonBtn">
+                                <i class="fas fa-copy"></i> نسخ
+                            </button>
                         </div>
-                        <h3 class="blog-title">Setting Up Your Perfect Art Studio</h3>
-                        <p>A guide to creating an inspiring and functional workspace for artists on any budget.</p>
-                    </div>
-                </div>
-                
-                <div class="blog-post">
-                    <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Art Business" class="blog-img">
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> April 10, 2023</span>
-                            <span><i class="far fa-clock"></i> 8 min read</span>
-                        </div>
-                        <h3 class="blog-title">Building Your Art Business Online</h3>
-                        <p>Strategies for artists to establish their brand and sell artwork through digital platforms.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Contact Page -->
-        <section id="contact" class="page">
-            <div class="page-header">
-                <h2>Contact Me</h2>
-                <p>Get in touch for commissions, inquiries, or collaborations</p>
-            </div>
-            
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h3>Contact Information</h3>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Artist</h4>
-                            <p>Nourhan Haydar</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Phone Number</h4>
-                            <p id="phoneNumber">+961 70 278 416</p>
-                            <a href="https://wa.me/96170278416" class="whatsapp-btn" target="_blank">
-                                <i class="fab fa-whatsapp"></i> Message on WhatsApp
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Email Address</h4>
-                            <p id="emailAddress">nourhanhaydar180@gmail.com</p>
-                            <button class="btn" onclick="copyEmail()" style="margin-top: 10px; padding: 10px 20px;">
-                                <i class="far fa-copy"></i> Copy Email
+                        
+                        <div class="share-link">
+                            <input type="text" id="csvLink" readonly value="سيتم إنشاء الرابط بعد حفظ الجدول">
+                            <button class="btn btn-primary" id="copyCsvBtn">
+                                <i class="fas fa-copy"></i> نسخ
                             </button>
                         </div>
                     </div>
                     
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Studio Location</h4>
-                            <p>Art Atelier, Arts District, Beirut, Lebanon</p>
+                    <div class="controls" style="justify-content: center;">
+                        <button class="btn btn-success" id="generateLinksBtn">
+                            <i class="fas fa-link"></i> إنشاء روابط المشاركة
+                        </button>
+                        <button class="btn btn-accent" id="saveToFileBtn">
+                            <i class="fas fa-download"></i> حفظ كملف
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                        <h3><i class="fas fa-info-circle"></i> معلومات المشاركة</h3>
+                        <p>• روابط المشاركة صالحة لمدة 30 يومًا.</p>
+                        <p>• يمكن للمستلمين عرض وتحميل الجدول ولكن لا يمكنهم تعديله.</p>
+                        <p>• لتمكين التعديل المشترك، احفظ الجدول إلى Google Sheets.</p>
+                        
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button class="btn btn-primary" id="openGoogleSheetsBtn">
+                                <i class="fab fa-google"></i> فتح في Google Sheets
+                            </button>
                         </div>
                     </div>
                 </div>
-                
-                <div class="contact-form">
-                    <h3>Send a Message</h3>
-                    <p>For immediate response, please use WhatsApp. Otherwise, fill the form below.</p>
-                    
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <select id="subject" required>
-                                <option value="">Select a subject</option>
-                                <option value="commission">Art Commission</option>
-                                <option value="purchase">Purchase Inquiry</option>
-                                <option value="workshop">Workshop Registration</option>
-                                <option value="collaboration">Collaboration</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Your Message</label>
-                            <textarea id="message" rows="5" required placeholder="Please include details about your inquiry..."></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                        
-                        <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-                            <i class="fas fa-info-circle"></i> For faster response, consider contacting via WhatsApp.
-                        </p>
-                    </form>
-                    
-                    <div id="formMessage" class="message"></div>
-                </div>
             </div>
-        </section>
-        
-        <!-- Login Page -->
-        <section id="login" class="page">
-            <div class="page-header">
-                <h2>Login</h2>
-                <p>Access your account to manage commissions and purchases</p>
-            </div>
-            
-            <div class="login-container">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail">Email Address</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="rememberMe"> Remember me
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn" style="width: 100%;">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                    
-                    <div class="social-login">
-                        <button type="button" class="social-btn">
-                            <i class="fab fa-google" style="color: #DB4437;"></i> Google
-                        </button>
-                        <button type="button" class="social-btn">
-                            <i class="fab fa-facebook" style="color: #4267B2;"></i> Facebook
-                        </button>
-                    </div>
-                    
-                    <div class="divider">
-                        <span>or</span>
-                    </div>
-                    
-                    <div class="form-footer">
-                        <p>Don't have an account? <a href="#" onclick="showRegisterMessage()">Sign up here</a></p>
-                        <p><a href="#" onclick="showForgotPasswordMessage()">Forgot your password?</a></p>
-                    </div>
-                </form>
-                
-                <div id="loginMessage" class="message"></div>
-            </div>
-        </section>
-    </main>
+        </div>
+    </div>
     
-    <!-- Footer -->
     <footer>
-        <div class="footer-container">
-            <div class="footer-col">
-                <h3>Nourhan Haydar</h3>
-                <p>Contemporary visual artist creating expressive works that blend emotion, nature, and abstract forms.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="#" data-page="home">Gallery</a></li>
-                    <li><a href="#" data-page="about">About the Artist</a></li>
-                    <li><a href="#" data-page="services">Services</a></li>
-                    <li><a href="#" data-page="shop">Shop</a></li>
-                    <li><a href="#" data-page="blog">Blog</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Services</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Custom Commissions</a></li>
-                    <li><a href="#">Art Consultation</a></li>
-                    <li><a href="#">Private Lessons</a></li>
-                    <li><a href="#">Workshops</a></li>
-                    <li><a href="#">Art Installation</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Newsletter</h3>
-                <p>Subscribe for updates on new artworks, exhibitions, and special offers.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Your email address" required>
-                    <button type="submit" class="btn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-        
-        <div class="copyright">
-            <p>&copy; 2023 Nourhan Haydar Art Atelier. All rights reserved.</p>
-        </div>
+        <p>© 2023 نظام سكانر المنتجات المتكامل | تم التطوير لمسح وإدارة المنتجات بسهولة</p>
     </footer>
-    
+
     <script>
-        // Artworks Data
-        const artworks = [
-            {
-                id: 1,
-                title: "Evening Serenity",
-                description: "Oil painting capturing the tranquil moment of sunset over coastal waters",
-                price: "$1,200",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "original"
-            },
-            {
-                id: 2,
-                title: "Spring Hope",
-                description: "Watercolor painting of blooming spring flowers with delicate details",
-                price: "$850",
-                image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "original"
-            },
-            {
-                id: 3,
-                title: "Contemplation",
-                description: "Portrait expressing deep thought and introspection through subtle expressions",
-                price: "$1,500",
-                image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "original"
-            },
-            {
-                id: 4,
-                title: "Heritage Colors - Print",
-                description: "Limited edition print of traditional patterns in vibrant contemporary colors",
-                price: "$120",
-                image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "print"
-            },
-            {
-                id: 5,
-                title: "Still Nature",
-                description: "Composition finding beauty in everyday objects and natural elements",
-                price: "$950",
-                image: "https://images.unsplash.com/photo-1543857778-c4a1a569e388?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "original"
-            },
-            {
-                id: 6,
-                title: "Colored Dream",
-                description: "Abstract expressionist work exploring the subconscious through vibrant colors",
-                price: "$1,800",
-                image: "https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "original"
-            },
-            {
-                id: 7,
-                title: "Art Tote Bag",
-                description: "Canvas tote bag featuring exclusive artwork print, perfect for art lovers",
-                price: "$45",
-                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "merchandise"
-            },
-            {
-                id: 8,
-                title: "Urban Rhythm - Print",
-                description: "Limited edition digital print capturing the energy of city life",
-                price: "$95",
-                image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "print"
-            }
+        // بيانات التطبيق
+        let products = [
+            { id: 1, code: '123456789012', name: 'منتج تجريبي', category: 'عام', price: 10.00, quantity: 2, total: 20.00 }
         ];
-
-        // Shop Items Data
-        const shopItems = [
-            ...artworks,
-            {
-                id: 9,
-                title: "Artisan Coffee Mug",
-                description: "Ceramic mug with hand-painted artwork, dishwasher safe",
-                price: "$28",
-                image: "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "merchandise"
-            },
-            {
-                id: 10,
-                title: "Abstract Emotions - Print",
-                description: "Fine art print on premium paper, edition of 100",
-                price: "$150",
-                image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                category: "print"
-            }
-        ];
-
-        // DOM Elements
-        const navToggle = document.getElementById('navToggle');
-        const mainNav = document.getElementById('mainNav');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pages = document.querySelectorAll('.page');
-        const galleryContainer = document.getElementById('galleryContainer');
-        const shopContainer = document.getElementById('shopContainer');
-        const contactForm = document.getElementById('contactForm');
-        const loginForm = document.getElementById('loginForm');
-        const formMessage = document.getElementById('formMessage');
-        const loginMessage = document.getElementById('loginMessage');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const footerLinks = document.querySelectorAll('.footer-links a');
-
-        // Initialize the website
+        let rowCounter = 2;
+        let scannerActive = false;
+        let html5QrCode;
+        
+        // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', function() {
-            // Load gallery and shop
-            renderGallery();
-            renderShop();
-            
-            // Setup navigation
-            setupNavigation();
-            
-            // Setup forms
-            if (contactForm) {
-                contactForm.addEventListener('submit', handleContactSubmit);
-            }
-            
-            if (loginForm) {
-                loginForm.addEventListener('submit', handleLoginSubmit);
-            }
-            
-            // Setup shop filters
-            setupShopFilters();
-            
-            // Setup footer navigation
-            setupFooterNavigation();
-            
-            // Add animation on scroll
-            setupScrollAnimations();
+            initTabs();
+            initTable();
+            initScanner();
+            initButtons();
+            updateFullSheetTable();
+            calculateGrandTotal();
         });
-
-        // Render gallery
-        function renderGallery() {
-            if (!galleryContainer) return;
-            
-            galleryContainer.innerHTML = '';
-            
-            artworks.filter(item => item.category === 'original').forEach(artwork => {
-                const artworkElement = createArtworkCard(artwork);
-                galleryContainer.appendChild(artworkElement);
-            });
-        }
-
-        // Render shop items
-        function renderShop(filter = 'all') {
-            if (!shopContainer) return;
-            
-            shopContainer.innerHTML = '';
-            
-            let filteredItems = shopItems;
-            
-            if (filter !== 'all') {
-                filteredItems = shopItems.filter(item => item.category === filter);
-            }
-            
-            filteredItems.forEach(item => {
-                const shopItemElement = createArtworkCard(item);
-                shopContainer.appendChild(shopItemElement);
-            });
-        }
-
-        // Create artwork card
-        function createArtworkCard(item) {
-            const card = document.createElement('div');
-            card.className = 'artwork';
-            card.setAttribute('data-category', item.category);
-            
-            card.innerHTML = `
-                <img src="${item.image}" alt="${item.title}" class="artwork-img">
-                <div class="artwork-info">
-                    <div class="artwork-title">${item.title}</div>
-                    <div class="artwork-desc">${item.description}</div>
-                    <div class="artwork-price">${item.price}</div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // Setup navigation
-        function setupNavigation() {
-            // Mobile menu toggle
-            navToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-            });
-            
-            // Page navigation
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
+        
+        // تهيئة نظام التبويب
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
                     
-                    // Close mobile menu
-                    if (window.innerWidth <= 768) {
-                        mainNav.classList.remove('active');
-                    }
-                    
-                    // Get target page
-                    const pageId = link.getAttribute('data-page');
-                    
-                    // Update active states
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    
-                    // Show target page
-                    pages.forEach(page => {
-                        page.classList.remove('active');
-                        if (page.id === pageId) {
-                            page.classList.add('active');
-                        }
+                    // إزالة النشاط من جميع الأزرار والمحتويات
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
                     });
                     
-                    // Scroll to top
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // إضافة النشاط للزر والمحتوى المحدد
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
                 });
             });
+        }
+        
+        // تهيئة الجدول
+        function initTable() {
+            const tableBody = document.getElementById('tableBody');
             
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768 && 
-                    !e.target.closest('nav') && 
-                    !e.target.closest('.nav-toggle')) {
-                    mainNav.classList.remove('active');
+            // إضافة حدث للحذف
+            tableBody.addEventListener('click', function(e) {
+                if (e.target.closest('.action-btn.delete')) {
+                    const row = e.target.closest('tr');
+                    const rowId = parseInt(row.cells[0].textContent);
+                    
+                    if (confirm(`هل تريد حذف المنتج رقم ${rowId}؟`)) {
+                        row.remove();
+                        updateRowNumbers();
+                        updateFullSheetTable();
+                        calculateGrandTotal();
+                        showMessage('تم حذف المنتج بنجاح', 'success');
+                    }
+                }
+                
+                // تحويل الخلايا القابلة للتحرير
+                if (e.target.classList.contains('editable')) {
+                    makeCellEditable(e.target);
                 }
             });
+            
+            // تحديث أرقام الصفوف
+            updateRowNumbers();
         }
-
-        // Setup shop filters
-        function setupShopFilters() {
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Update active button
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    
-                    // Filter items
-                    const filter = button.getAttribute('data-filter');
-                    renderShop(filter);
-                });
+        
+        // جعل الخلية قابلة للتحرير
+        function makeCellEditable(cell) {
+            const originalValue = cell.textContent;
+            const field = cell.getAttribute('data-field');
+            
+            // إنشاء حقل إدخال
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = originalValue;
+            input.style.width = '100%';
+            input.style.border = 'none';
+            input.style.padding = '5px';
+            input.style.fontSize = 'inherit';
+            input.style.fontFamily = 'inherit';
+            
+            // مسح محتوى الخلية وإضافة حقل الإدخال
+            cell.textContent = '';
+            cell.appendChild(input);
+            input.focus();
+            
+            // حفظ التغييرات عند الضغط على Enter
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    finishEditing(cell, input.value, field);
+                } else if (e.key === 'Escape') {
+                    cell.textContent = originalValue;
+                }
+            });
+            
+            // حفظ التغييرات عند فقدان التركيز
+            input.addEventListener('blur', function() {
+                finishEditing(cell, input.value, field);
             });
         }
-
-        // Setup footer navigation
-        function setupFooterNavigation() {
-            footerLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const pageId = link.getAttribute('data-page');
-                    if (pageId) {
-                        e.preventDefault();
-                        
-                        // Find and click corresponding nav link
-                        navLinks.forEach(navLink => {
-                            if (navLink.getAttribute('data-page') === pageId) {
-                                navLink.click();
-                            }
-                        });
-                    }
-                });
-            });
-        }
-
-        // Copy email to clipboard
-        function copyEmail() {
-            const email = document.getElementById('emailAddress').textContent;
-            navigator.clipboard.writeText(email).then(() => {
-                alert('Email copied to clipboard: ' + email);
-            });
-        }
-
-        // Handle contact form submission
-        function handleContactSubmit(e) {
-            e.preventDefault();
+        
+        // إنهاء تحرير الخلية
+        function finishEditing(cell, newValue, field) {
+            cell.textContent = newValue;
             
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            
-            // Show success message
-            formMessage.textContent = `Thank you ${name}! Your message has been sent successfully. I will respond to you within 24-48 hours.`;
-            formMessage.className = 'message success';
-            formMessage.style.display = 'block';
-            
-            // Reset form
-            contactForm.reset();
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                formMessage.style.display = 'none';
-            }, 5000);
-            
-            // In a real application, you would send this data to a server
-            console.log('Contact form submitted:', { name, email, subject, message });
-        }
-
-        // Handle login form submission
-        function handleLoginSubmit(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            // Simple validation
-            if (email && password) {
-                loginMessage.textContent = 'Login successful! Redirecting to your account...';
-                loginMessage.className = 'message success';
-                loginMessage.style.display = 'block';
-                
-                // Reset form
-                loginForm.reset();
-                
-                // Simulate redirect
-                setTimeout(() => {
-                    loginMessage.textContent = 'In the full version, you would be redirected to your account dashboard.';
-                }, 1500);
-            } else {
-                loginMessage.textContent = 'Please fill in all required fields.';
-                loginMessage.className = 'message error';
-                loginMessage.style.display = 'block';
+            // تحديث القيم الحسابية إذا لزم الأمر
+            if (field === 'price' || field === 'quantity') {
+                updateRowTotal(cell.closest('tr'));
             }
             
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                loginMessage.style.display = 'none';
-            }, 5000);
+            updateFullSheetTable();
+            calculateGrandTotal();
         }
-
-        // Show register message
-        function showRegisterMessage() {
-            alert('In the full version, this would open a registration form to create a new account.');
+        
+        // تحديث المجموع للصف
+        function updateRowTotal(row) {
+            const priceCell = row.querySelector('[data-field="price"]');
+            const quantityCell = row.querySelector('[data-field="quantity"]');
+            const totalCell = row.querySelector('[data-field="total"]');
+            
+            const price = parseFloat(priceCell.textContent) || 0;
+            const quantity = parseInt(quantityCell.textContent) || 0;
+            const total = price * quantity;
+            
+            totalCell.textContent = total.toFixed(2);
         }
-
-        // Show forgot password message
-        function showForgotPasswordMessage() {
-            alert('In the full version, this would open a password recovery form.');
+        
+        // تحديث أرقام الصفوف
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
         }
-
-        // Setup scroll animations
-        function setupScrollAnimations() {
-            // Simple fade-in animation for elements
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
+        
+        // تهيئة الماسح الضوئي
+        function initScanner() {
+            html5QrCode = new Html5Qrcode("reader");
+            
+            document.getElementById('startScannerBtn').addEventListener('click', startScanner);
+            document.getElementById('stopScannerBtn').addEventListener('click', stopScanner);
+        }
+        
+        // بدء المسح الضوئي
+        function startScanner() {
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                if (scannerActive) {
+                    stopScanner();
+                    showMessage(`تم مسح المنتج: ${decodedText}`, 'success');
+                    addProductFromScan(decodedText);
+                    
+                    // إعادة تشغيل الماسح بعد ثانيتين
+                    setTimeout(() => {
+                        if (!scannerActive) {
+                            startScanner();
+                        }
+                    }, 2000);
+                }
             };
             
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             
-            // Observe all artwork cards
-            document.querySelectorAll('.artwork, .service-card, .blog-post').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                .then(() => {
+                    scannerActive = true;
+                    document.getElementById('scannerResult').textContent = 'جاري المسح...';
+                    document.getElementById('scannerResult').style.color = 'var(--accent-color)';
+                    showMessage('تم تشغيل الماسح الضوئي بنجاح', 'success');
+                })
+                .catch(err => {
+                    console.error("خطأ في تشغيل الماسح:", err);
+                    showMessage('فشل تشغيل الماسح الضوئي. تأكد من صلاحية الكاميرا.', 'error');
+                });
+        }
+        
+        // إيقاف المسح الضوئي
+        function stopScanner() {
+            if (scannerActive) {
+                html5QrCode.stop()
+                    .then(() => {
+                        scannerActive = false;
+                        document.getElementById('scannerResult').textContent = 'الماسح متوقف';
+                        document.getElementById('scannerResult').style.color = 'var(--danger-color)';
+                    })
+                    .catch(err => {
+                        console.error("خطأ في إيقاف الماسح:", err);
+                    });
+            }
+        }
+        
+        // إضافة منتج من المسح الضوئي
+        function addProductFromScan(code) {
+            // البحث عما إذا كان المنتج موجودًا بالفعل
+            const existingRow = Array.from(document.querySelectorAll('#tableBody [data-field="code"]'))
+                .find(cell => cell.textContent === code);
+            
+            if (existingRow) {
+                // زيادة الكمية إذا كان المنتج موجودًا
+                const row = existingRow.closest('tr');
+                const quantityCell = row.querySelector('[data-field="quantity"]');
+                const currentQty = parseInt(quantityCell.textContent) || 0;
+                quantityCell.textContent = currentQty + 1;
+                updateRowTotal(row);
+                
+                // تأثير تمييز
+                row.classList.add('highlight');
+                setTimeout(() => row.classList.remove('highlight'), 1500);
+                
+                showMessage('تم زيادة كمية المنتج الموجود', 'success');
+            } else {
+                // إضافة منتج جديد
+                const newProduct = {
+                    id: rowCounter++,
+                    code: code,
+                    name: `منتج ${code.substring(0, 6)}`,
+                    price: (Math.random() * 50 + 5).toFixed(2),
+                    quantity: 1,
+                    total: 0
+                };
+                
+                newProduct.total = (parseFloat(newProduct.price) * newProduct.quantity).toFixed(2);
+                products.push(newProduct);
+                
+                addRowToTable(newProduct);
+                showMessage('تم إضافة منتج جديد', 'success');
+            }
+            
+            updateFullSheetTable();
+            calculateGrandTotal();
+        }
+        
+        // إضافة صف إلى الجدول
+        function addRowToTable(product) {
+            const tableBody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td>${product.id}</td>
+                <td class="editable" data-field="code">${product.code}</td>
+                <td class="editable" data-field="name">${product.name}</td>
+                <td class="editable" data-field="price">${product.price}</td>
+                <td class="editable" data-field="quantity">${product.quantity}</td>
+                <td data-field="total">${product.total}</td>
+                <td class="actions-cell">
+                    <button class="action-btn edit" title="تعديل">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete" title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            
+            tableBody.appendChild(newRow);
+            updateRowNumbers();
+        }
+        
+        // تحديث جدول البيانات الكامل
+        function updateFullSheetTable() {
+            const fullSheetBody = document.getElementById('fullSheetBody');
+            fullSheetBody.innerHTML = '';
+            
+            // جمع البيانات من الجدول الرئيسي
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                const newRow = document.createElement('tr');
+                
+                newRow.innerHTML = `
+                    <td>${row.cells[0].textContent}</td>
+                    <td>${row.cells[1].textContent}</td>
+                    <td>${row.cells[2].textContent}</td>
+                    <td>عام</td>
+                    <td>${row.cells[3].textContent}</td>
+                    <td>${row.cells[4].textContent}</td>
+                    <td>${row.cells[5].textContent}</td>
+                    <td class="actions-cell">
+                        <button class="action-btn delete" title="حذف">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                fullSheetBody.appendChild(newRow);
             });
+        }
+        
+        // حساب المجموع الكلي
+        function calculateGrandTotal() {
+            const totalCells = document.querySelectorAll('[data-field="total"]');
+            let grandTotal = 0;
+            
+            totalCells.forEach(cell => {
+                grandTotal += parseFloat(cell.textContent) || 0;
+            });
+            
+            document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+        }
+        
+        // تهيئة الأزرار
+        function initButtons() {
+            // إضافة صف
+            document.getElementById('addRowBtn').addEventListener('click', addNewRow);
+            document.getElementById('addRowSheetBtn').addEventListener('click', addNewRow);
+            
+            // إضافة يدويًا
+            document.getElementById('addManualBtn').addEventListener('click', function() {
+                const productCode = prompt('أدخل رمز المنتج (باركود):');
+                if (productCode) {
+                    addProductFromScan(productCode);
+                }
+            });
+            
+            // مسح الكل
+            document.getElementById('clearAllBtn').addEventListener('click', function() {
+                if (confirm('هل تريد مسح جميع المنتجات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                    document.getElementById('tableBody').innerHTML = '';
+                    products = [];
+                    rowCounter = 1;
+                    updateFullSheetTable();
+                    calculateGrandTotal();
+                    showMessage('تم مسح جميع المنتجات', 'success');
+                }
+            });
+            
+            // تصدير الجدول
+            document.getElementById('exportBtn').addEventListener('click', exportTable);
+            
+            // إنشاء روابط المشاركة
+            document.getElementById('generateLinksBtn').addEventListener('click', generateShareLinks);
+            
+            // نسخ الروابط
+            document.getElementById('copyJsonBtn').addEventListener('click', function() {
+                copyToClipboard('jsonLink');
+            });
+            
+            document.getElementById('copyCsvBtn').addEventListener('click', function() {
+                copyToClipboard('csvLink');
+            });
+            
+            // حفظ كملف
+            document.getElementById('saveToFileBtn').addEventListener('click', saveTableToFile);
+            
+            // فتح في Google Sheets
+            document.getElementById('openGoogleSheetsBtn').addEventListener('click', openInGoogleSheets);
+            
+            // حساب الإجمالي
+            document.getElementById('calculateTotalBtn').addEventListener('click', calculateGrandTotal);
+        }
+        
+        // إضافة صف جديد
+        function addNewRow() {
+            const newProduct = {
+                id: rowCounter++,
+                code: `NEW${Date.now().toString().slice(-6)}`,
+                name: 'منتج جديد',
+                price: '0.00',
+                quantity: '1',
+                total: '0.00'
+            };
+            
+            addRowToTable(newProduct);
+            updateFullSheetTable();
+            calculateGrandTotal();
+            showMessage('تم إضافة صف جديد', 'success');
+        }
+        
+        // تصدير الجدول
+        function exportTable() {
+            const rows = [];
+            const header = ['#', 'رمز المنتج', 'اسم المنتج', 'السعر', 'الكمية', 'المجموع'];
+            rows.push(header.join(','));
+            
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            tableRows.forEach(row => {
+                const rowData = [
+                    row.cells[0].textContent,
+                    row.cells[1].textContent,
+                    row.cells[2].textContent,
+                    row.cells[3].textContent,
+                    row.cells[4].textContent,
+                    row.cells[5].textContent
+                ];
+                rows.push(rowData.join(','));
+            });
+            
+            const csvContent = rows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'منتجات_' + new Date().toISOString().slice(0, 10) + '.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showMessage('تم تصدير الجدول بنجاح', 'success');
+        }
+        
+        // إنشاء روابط المشاركة
+        function generateShareLinks() {
+            const tableData = getTableData();
+            const jsonData = JSON.stringify(tableData);
+            const csvData = convertToCSV(tableData);
+            
+            // في تطبيق حقيقي، هنا يتم رفع البيانات إلى خادم والحصول على روابط حقيقية
+            // لكننا سنقوم بمحاكاة ذلك
+            
+            const baseUrl = window.location.href.split('#')[0];
+            document.getElementById('jsonLink').value = `${baseUrl}#data=${btoa(jsonData)}`;
+            document.getElementById('csvLink').value = `${baseUrl}#csv=${btoa(csvData)}`;
+            
+            showMessage('تم إنشاء روابط المشاركة بنجاح', 'success');
+        }
+        
+        // الحصول على بيانات الجدول
+        function getTableData() {
+            const tableData = [];
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach(row => {
+                tableData.push({
+                    id: row.cells[0].textContent,
+                    code: row.cells[1].textContent,
+                    name: row.cells[2].textContent,
+                    price: row.cells[3].textContent,
+                    quantity: row.cells[4].textContent,
+                    total: row.cells[5].textContent
+                });
+            });
+            
+            return tableData;
+        }
+        
+        // تحويل إلى CSV
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const rows = data.map(row => 
+                headers.map(header => JSON.stringify(row[header])).join(',')
+            );
+            
+            return [headers.join(','), ...rows].join('\n');
+        }
+        
+        // نسخ إلى الحافظة
+        function copyToClipboard(inputId) {
+            const input = document.getElementById(inputId);
+            input.select();
+            input.setSelectionRange(0, 99999);
+            
+            navigator.clipboard.writeText(input.value)
+                .then(() => {
+                    showMessage('تم نسخ الرابط إلى الحافظة', 'success');
+                })
+                .catch(err => {
+                    console.error('فشل نسخ الرابط: ', err);
+                    showMessage('فشل نسخ الرابط', 'error');
+                });
+        }
+        
+        // حفظ الجدول كملف
+        function saveTableToFile() {
+            const tableData = getTableData();
+            const jsonData = JSON.stringify(tableData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'منتجات_' + new Date().toISOString().slice(0, 10) + '.json');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showMessage('تم حفظ الجدول كملف JSON', 'success');
+        }
+        
+        // فتح في Google Sheets (محاكاة)
+        function openInGoogleSheets() {
+            showMessage('سيتم فتح الجدول في Google Sheets. في التطبيق الحقيقي، سيتم رفع البيانات إلى Google Sheets.', 'success');
+            
+            // محاكاة التأخير
+            setTimeout(() => {
+                const tableData = getTableData();
+                const csvData = convertToCSV(tableData);
+                const encodedData = encodeURIComponent(csvData);
+                
+                // رابط Google Sheets لإنشاء جدول جديد
+                const googleSheetsUrl = `https://docs.google.com/spreadsheets/create?usp=sharing&data=${encodedData}`;
+                
+                // فتح نافذة جديدة
+                window.open(googleSheetsUrl, '_blank');
+            }, 1000);
+        }
+        
+        // عرض الرسائل
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            
+            // إخفاء الرسالة بعد 3 ثوانٍ
+            setTimeout(() => {
+                messageEl.className = 'message';
+            }, 3000);
         }
     </script>
 </body>
