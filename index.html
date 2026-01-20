@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سكانر المنتجات مع جدول تفاعلي</title>
+    <title>سكانر المنتجات - الباركود والكمية فقط</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
@@ -247,7 +247,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 400px;
         }
         
         th, td {
@@ -441,14 +441,58 @@
             background-color: #fff3cd !important;
             transition: background-color 1.5s;
         }
+        
+        /* تحسينات للجدول المبسط */
+        .barcode-cell {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        
+        .quantity-cell {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .counter-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .counter-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .total-count {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="header-top">
             <div class="logo">
-                <i class="fas fa-shopping-cart"></i>
-                <span>سكانر المنتجات المتكامل</span>
+                <i class="fas fa-barcode"></i>
+                <span>سكانر الباركود والكميات</span>
             </div>
             <div class="controls">
                 <button class="btn btn-accent" id="clearAllBtn">
@@ -480,8 +524,8 @@
         <!-- تبويب الماسح الضوئي -->
         <div class="tab-content active" id="scanner-tab">
             <div class="scanner-section">
-                <h2><i class="fas fa-qrcode"></i> مسح المنتجات بالكاميرا</h2>
-                <p>استخدم الكاميرا لمسح رموز المنتجات (باركود، QR كود) وسيتم إضافتها تلقائياً إلى الجدول.</p>
+                <h2><i class="fas fa-qrcode"></i> مسح الباركود بالكاميرا</h2>
+                <p>استخدم الكاميرا لمسح باركود المنتجات وسيتم إضافة الكمية تلقائياً إلى الجدول.</p>
                 
                 <div class="scanner-container">
                     <div id="reader" class="pulse"></div>
@@ -504,7 +548,10 @@
             
             <div class="sheet-section">
                 <div class="sheet-header">
-                    <div class="sheet-title">المنتجات المضافة حديثاً</div>
+                    <div class="sheet-title">
+                        المنتجات المضافة
+                        <span class="total-count" id="totalProducts">0 منتج</span>
+                    </div>
                     <div class="controls">
                         <button class="btn btn-primary" id="addRowBtn">
                             <i class="fas fa-plus"></i> إضافة صف
@@ -517,32 +564,13 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="20%">رمز المنتج</th>
-                                <th width="25%">اسم المنتج</th>
-                                <th width="15%">السعر</th>
-                                <th width="15%">الكمية</th>
-                                <th width="15%">المجموع</th>
-                                <th width="10%">إجراءات</th>
+                                <th width="55%">باركود المنتج</th>
+                                <th width="25%">الكمية</th>
+                                <th width="15%">إجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
                             <!-- الصفوف ستضاف هنا ديناميكياً -->
-                            <tr>
-                                <td>1</td>
-                                <td class="editable" data-field="code">123456789012</td>
-                                <td class="editable" data-field="name">منتج تجريبي</td>
-                                <td class="editable" data-field="price">10.00</td>
-                                <td class="editable" data-field="quantity">2</td>
-                                <td data-field="total">20.00</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit" title="تعديل">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" title="حذف">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -553,7 +581,10 @@
         <div class="tab-content" id="sheet-tab">
             <div class="sheet-section">
                 <div class="sheet-header">
-                    <div class="sheet-title">جدول المنتجات الكامل</div>
+                    <div class="sheet-title">
+                        جدول الباركود والكميات الكامل
+                        <span class="total-count" id="fullTotalProducts">0 منتج</span>
+                    </div>
                     <div class="controls">
                         <button class="btn btn-primary" id="addRowSheetBtn">
                             <i class="fas fa-plus"></i> إضافة صف
@@ -569,25 +600,14 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="15%">رمز المنتج</th>
-                                <th width="25%">اسم المنتج</th>
-                                <th width="15%">الفئة</th>
-                                <th width="10%">السعر</th>
-                                <th width="10%">الكمية</th>
-                                <th width="10%">المجموع</th>
+                                <th width="60%">باركود المنتج</th>
+                                <th width="25%">الكمية</th>
                                 <th width="10%">إجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="fullSheetBody">
                             <!-- سيتم ملؤه بنفس بيانات productsTable -->
                         </tbody>
-                        <tfoot id="tableFooter">
-                            <tr>
-                                <td colspan="6" style="text-align: left; font-weight: 700;">المجموع الكلي:</td>
-                                <td id="grandTotal" style="font-weight: 700;">0.00</td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -596,8 +616,8 @@
         <!-- تبويب المشاركة -->
         <div class="tab-content" id="share-tab">
             <div class="share-section">
-                <h2><i class="fas fa-share-alt"></i> مشاركة جدول المنتجات</h2>
-                <p>يمكنك مشاركة جدول المنتجات مع الآخرين عن طريق الروابط التالية:</p>
+                <h2><i class="fas fa-share-alt"></i> مشاركة جدول الباركود والكميات</h2>
+                <p>يمكنك مشاركة جدول الباركود والكميات مع الآخرين عن طريق الروابط التالية:</p>
                 
                 <div class="share-controls">
                     <div class="share-options">
@@ -643,15 +663,13 @@
     </div>
     
     <footer>
-        <p>© 2023 نظام سكانر المنتجات المتكامل | تم التطوير لمسح وإدارة المنتجات بسهولة</p>
+        <p>© 2023 نظام سكانر الباركود والكميات | تم التطوير لمسح وإدارة المنتجات بسهولة</p>
     </footer>
 
     <script>
         // بيانات التطبيق
-        let products = [
-            { id: 1, code: '123456789012', name: 'منتج تجريبي', category: 'عام', price: 10.00, quantity: 2, total: 20.00 }
-        ];
-        let rowCounter = 2;
+        let products = [];
+        let rowCounter = 1;
         let scannerActive = false;
         let html5QrCode;
         
@@ -662,7 +680,7 @@
             initScanner();
             initButtons();
             updateFullSheetTable();
-            calculateGrandTotal();
+            updateTotalCount();
         });
         
         // تهيئة نظام التبويب
@@ -695,18 +713,35 @@
                     const row = e.target.closest('tr');
                     const rowId = parseInt(row.cells[0].textContent);
                     
-                    if (confirm(`هل تريد حذف المنتج رقم ${rowId}؟`)) {
+                    if (confirm(`هل تريد حذف الباركود رقم ${rowId}؟`)) {
                         row.remove();
                         updateRowNumbers();
                         updateFullSheetTable();
-                        calculateGrandTotal();
-                        showMessage('تم حذف المنتج بنجاح', 'success');
+                        updateTotalCount();
+                        showMessage('تم حذف الباركود بنجاح', 'success');
                     }
                 }
                 
-                // تحويل الخلايا القابلة للتحرير
-                if (e.target.classList.contains('editable')) {
-                    makeCellEditable(e.target);
+                // تحرير الباركود
+                if (e.target.classList.contains('barcode-editable')) {
+                    makeBarcodeEditable(e.target);
+                }
+                
+                // زيادة/تقليل الكمية
+                if (e.target.classList.contains('quantity-inc')) {
+                    const quantitySpan = e.target.closest('.counter').querySelector('.quantity-value');
+                    let currentQty = parseInt(quantitySpan.textContent) || 0;
+                    quantitySpan.textContent = currentQty + 1;
+                    updateTotalCount();
+                }
+                
+                if (e.target.classList.contains('quantity-dec')) {
+                    const quantitySpan = e.target.closest('.counter').querySelector('.quantity-value');
+                    let currentQty = parseInt(quantitySpan.textContent) || 0;
+                    if (currentQty > 1) {
+                        quantitySpan.textContent = currentQty - 1;
+                        updateTotalCount();
+                    }
                 }
             });
             
@@ -714,10 +749,9 @@
             updateRowNumbers();
         }
         
-        // جعل الخلية قابلة للتحرير
-        function makeCellEditable(cell) {
+        // جعل خلية الباركود قابلة للتحرير
+        function makeBarcodeEditable(cell) {
             const originalValue = cell.textContent;
-            const field = cell.getAttribute('data-field');
             
             // إنشاء حقل إدخال
             const input = document.createElement('input');
@@ -727,7 +761,8 @@
             input.style.border = 'none';
             input.style.padding = '5px';
             input.style.fontSize = 'inherit';
-            input.style.fontFamily = 'inherit';
+            input.style.fontFamily = 'monospace';
+            input.style.letterSpacing = '1px';
             
             // مسح محتوى الخلية وإضافة حقل الإدخال
             cell.textContent = '';
@@ -737,42 +772,21 @@
             // حفظ التغييرات عند الضغط على Enter
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    finishEditing(cell, input.value, field);
+                    cell.textContent = input.value;
+                    cell.classList.add('barcode-editable');
+                    updateFullSheetTable();
                 } else if (e.key === 'Escape') {
                     cell.textContent = originalValue;
+                    cell.classList.add('barcode-editable');
                 }
             });
             
             // حفظ التغييرات عند فقدان التركيز
             input.addEventListener('blur', function() {
-                finishEditing(cell, input.value, field);
+                cell.textContent = input.value;
+                cell.classList.add('barcode-editable');
+                updateFullSheetTable();
             });
-        }
-        
-        // إنهاء تحرير الخلية
-        function finishEditing(cell, newValue, field) {
-            cell.textContent = newValue;
-            
-            // تحديث القيم الحسابية إذا لزم الأمر
-            if (field === 'price' || field === 'quantity') {
-                updateRowTotal(cell.closest('tr'));
-            }
-            
-            updateFullSheetTable();
-            calculateGrandTotal();
-        }
-        
-        // تحديث المجموع للصف
-        function updateRowTotal(row) {
-            const priceCell = row.querySelector('[data-field="price"]');
-            const quantityCell = row.querySelector('[data-field="quantity"]');
-            const totalCell = row.querySelector('[data-field="total"]');
-            
-            const price = parseFloat(priceCell.textContent) || 0;
-            const quantity = parseInt(quantityCell.textContent) || 0;
-            const total = price * quantity;
-            
-            totalCell.textContent = total.toFixed(2);
         }
         
         // تحديث أرقام الصفوف
@@ -796,7 +810,7 @@
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 if (scannerActive) {
                     stopScanner();
-                    showMessage(`تم مسح المنتج: ${decodedText}`, 'success');
+                    showMessage(`تم مسح الباركود: ${decodedText}`, 'success');
                     addProductFromScan(decodedText);
                     
                     // إعادة تشغيل الماسح بعد ثانيتين
@@ -839,44 +853,38 @@
         }
         
         // إضافة منتج من المسح الضوئي
-        function addProductFromScan(code) {
-            // البحث عما إذا كان المنتج موجودًا بالفعل
-            const existingRow = Array.from(document.querySelectorAll('#tableBody [data-field="code"]'))
-                .find(cell => cell.textContent === code);
+        function addProductFromScan(barcode) {
+            // البحث عما إذا كان الباركود موجودًا بالفعل
+            const existingRow = Array.from(document.querySelectorAll('#tableBody .barcode-cell'))
+                .find(cell => cell.textContent === barcode);
             
             if (existingRow) {
-                // زيادة الكمية إذا كان المنتج موجودًا
+                // زيادة الكمية إذا كان الباركود موجودًا
                 const row = existingRow.closest('tr');
-                const quantityCell = row.querySelector('[data-field="quantity"]');
-                const currentQty = parseInt(quantityCell.textContent) || 0;
-                quantityCell.textContent = currentQty + 1;
-                updateRowTotal(row);
+                const quantitySpan = row.querySelector('.quantity-value');
+                const currentQty = parseInt(quantitySpan.textContent) || 0;
+                quantitySpan.textContent = currentQty + 1;
                 
                 // تأثير تمييز
                 row.classList.add('highlight');
                 setTimeout(() => row.classList.remove('highlight'), 1500);
                 
-                showMessage('تم زيادة كمية المنتج الموجود', 'success');
+                showMessage('تم زيادة كمية الباركود الموجود', 'success');
             } else {
-                // إضافة منتج جديد
+                // إضافة باركود جديد
                 const newProduct = {
                     id: rowCounter++,
-                    code: code,
-                    name: `منتج ${code.substring(0, 6)}`,
-                    price: (Math.random() * 50 + 5).toFixed(2),
-                    quantity: 1,
-                    total: 0
+                    barcode: barcode,
+                    quantity: 1
                 };
                 
-                newProduct.total = (parseFloat(newProduct.price) * newProduct.quantity).toFixed(2);
                 products.push(newProduct);
-                
                 addRowToTable(newProduct);
-                showMessage('تم إضافة منتج جديد', 'success');
+                showMessage('تم إضافة باركود جديد', 'success');
             }
             
             updateFullSheetTable();
-            calculateGrandTotal();
+            updateTotalCount();
         }
         
         // إضافة صف إلى الجدول
@@ -886,15 +894,15 @@
             
             newRow.innerHTML = `
                 <td>${product.id}</td>
-                <td class="editable" data-field="code">${product.code}</td>
-                <td class="editable" data-field="name">${product.name}</td>
-                <td class="editable" data-field="price">${product.price}</td>
-                <td class="editable" data-field="quantity">${product.quantity}</td>
-                <td data-field="total">${product.total}</td>
+                <td class="barcode-cell barcode-editable" data-field="barcode">${product.barcode}</td>
+                <td class="quantity-cell">
+                    <div class="counter">
+                        <button class="counter-btn quantity-dec">-</button>
+                        <span class="quantity-value">${product.quantity}</span>
+                        <button class="counter-btn quantity-inc">+</button>
+                    </div>
+                </td>
                 <td class="actions-cell">
-                    <button class="action-btn edit" title="تعديل">
-                        <i class="fas fa-edit"></i>
-                    </button>
                     <button class="action-btn delete" title="حذف">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -914,15 +922,13 @@
             const rows = document.querySelectorAll('#tableBody tr');
             rows.forEach(row => {
                 const newRow = document.createElement('tr');
+                const barcode = row.querySelector('.barcode-cell').textContent;
+                const quantity = row.querySelector('.quantity-value').textContent;
                 
                 newRow.innerHTML = `
                     <td>${row.cells[0].textContent}</td>
-                    <td>${row.cells[1].textContent}</td>
-                    <td>${row.cells[2].textContent}</td>
-                    <td>عام</td>
-                    <td>${row.cells[3].textContent}</td>
-                    <td>${row.cells[4].textContent}</td>
-                    <td>${row.cells[5].textContent}</td>
+                    <td class="barcode-cell">${barcode}</td>
+                    <td class="quantity-cell">${quantity}</td>
                     <td class="actions-cell">
                         <button class="action-btn delete" title="حذف">
                             <i class="fas fa-trash"></i>
@@ -932,18 +938,24 @@
                 
                 fullSheetBody.appendChild(newRow);
             });
+            
+            // تحديث العداد في الجدول الكامل
+            document.getElementById('fullTotalProducts').textContent = `${rows.length} منتج`;
         }
         
-        // حساب المجموع الكلي
-        function calculateGrandTotal() {
-            const totalCells = document.querySelectorAll('[data-field="total"]');
-            let grandTotal = 0;
+        // تحديث العدد الكلي للمنتجات
+        function updateTotalCount() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            const totalItems = rows.length;
             
-            totalCells.forEach(cell => {
-                grandTotal += parseFloat(cell.textContent) || 0;
+            // حساب مجموع الكميات
+            let totalQuantity = 0;
+            rows.forEach(row => {
+                const quantity = parseInt(row.querySelector('.quantity-value').textContent) || 0;
+                totalQuantity += quantity;
             });
             
-            document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+            document.getElementById('totalProducts').textContent = `${totalItems} منتج (${totalQuantity} قطعة)`;
         }
         
         // تهيئة الأزرار
@@ -954,21 +966,21 @@
             
             // إضافة يدويًا
             document.getElementById('addManualBtn').addEventListener('click', function() {
-                const productCode = prompt('أدخل رمز المنتج (باركود):');
-                if (productCode) {
-                    addProductFromScan(productCode);
+                const barcode = prompt('أدخل باركود المنتج:');
+                if (barcode) {
+                    addProductFromScan(barcode);
                 }
             });
             
             // مسح الكل
             document.getElementById('clearAllBtn').addEventListener('click', function() {
-                if (confirm('هل تريد مسح جميع المنتجات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                if (confirm('هل تريد مسح جميع الباركودات؟ لا يمكن التراجع عن هذا الإجراء.')) {
                     document.getElementById('tableBody').innerHTML = '';
                     products = [];
                     rowCounter = 1;
                     updateFullSheetTable();
-                    calculateGrandTotal();
-                    showMessage('تم مسح جميع المنتجات', 'success');
+                    updateTotalCount();
+                    showMessage('تم مسح جميع الباركودات', 'success');
                 }
             });
             
@@ -994,41 +1006,41 @@
             document.getElementById('openGoogleSheetsBtn').addEventListener('click', openInGoogleSheets);
             
             // حساب الإجمالي
-            document.getElementById('calculateTotalBtn').addEventListener('click', calculateGrandTotal);
+            document.getElementById('calculateTotalBtn').addEventListener('click', function() {
+                updateTotalCount();
+                showMessage('تم حساب الإجمالي بنجاح', 'success');
+            });
         }
         
         // إضافة صف جديد
         function addNewRow() {
             const newProduct = {
                 id: rowCounter++,
-                code: `NEW${Date.now().toString().slice(-6)}`,
-                name: 'منتج جديد',
-                price: '0.00',
-                quantity: '1',
-                total: '0.00'
+                barcode: `BAR${Date.now().toString().slice(-8)}`,
+                quantity: 1
             };
             
             addRowToTable(newProduct);
             updateFullSheetTable();
-            calculateGrandTotal();
+            updateTotalCount();
             showMessage('تم إضافة صف جديد', 'success');
         }
         
         // تصدير الجدول
         function exportTable() {
             const rows = [];
-            const header = ['#', 'رمز المنتج', 'اسم المنتج', 'السعر', 'الكمية', 'المجموع'];
+            const header = ['#', 'باركود المنتج', 'الكمية'];
             rows.push(header.join(','));
             
             const tableRows = document.querySelectorAll('#tableBody tr');
             tableRows.forEach(row => {
+                const barcode = row.querySelector('.barcode-cell').textContent;
+                const quantity = row.querySelector('.quantity-value').textContent;
+                
                 const rowData = [
                     row.cells[0].textContent,
-                    row.cells[1].textContent,
-                    row.cells[2].textContent,
-                    row.cells[3].textContent,
-                    row.cells[4].textContent,
-                    row.cells[5].textContent
+                    barcode,
+                    quantity
                 ];
                 rows.push(rowData.join(','));
             });
@@ -1039,7 +1051,7 @@
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
-            link.setAttribute('download', 'منتجات_' + new Date().toISOString().slice(0, 10) + '.csv');
+            link.setAttribute('download', 'باركود_كميات_' + new Date().toISOString().slice(0, 10) + '.csv');
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
@@ -1071,13 +1083,13 @@
             const rows = document.querySelectorAll('#tableBody tr');
             
             rows.forEach(row => {
+                const barcode = row.querySelector('.barcode-cell').textContent;
+                const quantity = row.querySelector('.quantity-value').textContent;
+                
                 tableData.push({
                     id: row.cells[0].textContent,
-                    code: row.cells[1].textContent,
-                    name: row.cells[2].textContent,
-                    price: row.cells[3].textContent,
-                    quantity: row.cells[4].textContent,
-                    total: row.cells[5].textContent
+                    barcode: barcode,
+                    quantity: quantity
                 });
             });
             
@@ -1121,7 +1133,7 @@
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
-            link.setAttribute('download', 'منتجات_' + new Date().toISOString().slice(0, 10) + '.json');
+            link.setAttribute('download', 'باركود_كميات_' + new Date().toISOString().slice(0, 10) + '.json');
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
