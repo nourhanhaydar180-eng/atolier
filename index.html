@@ -1,9 +1,11 @@
+
+
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سكانر المنتجات - الباركود والكمية فقط</title>
+    <title>Product Scanner with Interactive Table</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
@@ -24,6 +26,7 @@
             --border-color: #dee2e6;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --warning-color: #ffc107;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
@@ -236,6 +239,15 @@
             background-color: #218c68;
         }
         
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
         /* الجدول */
         .table-container {
             overflow-x: auto;
@@ -247,12 +259,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 400px;
+            min-width: 600px;
         }
         
         th, td {
             padding: 12px 15px;
-            text-align: right;
+            text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
         
@@ -370,20 +382,70 @@
             display: block;
         }
         
+        .message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        
         /* تصميم متجاوب */
-        @media (max-width: 768px) {
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 95%;
+            }
+        }
+        
+        @media (max-width: 992px) {
             .header-top {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
             }
             
-            .nav-tabs {
-                width: 100%;
+            .logo {
+                justify-content: center;
+            }
+            
+            .controls {
+                justify-content: center;
             }
             
             .sheet-header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            header, .scanner-section, .sheet-section, .share-section {
+                padding: 15px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                padding: 12px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .tab-btn:last-child {
+                border-bottom: none;
+            }
+            
+            .scanner-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .scanner-controls .btn {
+                width: 100%;
+                justify-content: center;
             }
             
             .controls {
@@ -395,10 +457,12 @@
                 flex: 1;
                 justify-content: center;
                 min-width: 140px;
+                padding: 12px;
             }
             
             th, td {
                 padding: 8px 10px;
+                font-size: 0.9rem;
             }
             
             .share-options {
@@ -408,21 +472,53 @@
             .share-link {
                 min-width: 100%;
             }
+            
+            table {
+                min-width: 400px;
+            }
         }
         
         @media (max-width: 480px) {
-            .scanner-controls {
-                flex-direction: column;
-                width: 100%;
+            .logo {
+                font-size: 1.2rem;
             }
             
-            .scanner-controls .btn {
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
+            .sheet-title {
+                font-size: 1.3rem;
+            }
+            
+            .btn {
+                min-width: 120px;
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            
+            th, td {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+            
+            #reader {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
                 width: 100%;
             }
             
             .tab-btn {
-                padding: 10px 5px;
                 font-size: 0.9rem;
+                padding: 10px 5px;
             }
         }
         
@@ -442,48 +538,61 @@
             transition: background-color 1.5s;
         }
         
-        /* تحسينات للجدول المبسط */
-        .barcode-cell {
-            font-family: monospace;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-        }
-        
-        .quantity-cell {
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .counter {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .counter-btn {
-            width: 30px;
-            height: 30px;
+        /* شاشة التحميل */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            border: 1px solid var(--border-color);
-            background-color: white;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
         
-        .counter-btn:hover {
-            background-color: #f0f0f0;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
-        .total-count {
-            background-color: var(--primary-color);
+        /* إشعارات صغيرة */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 700;
-            margin-left: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            max-width: 300px;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.success {
+            background-color: var(--success-color);
+        }
+        
+        .notification.error {
+            background-color: var(--danger-color);
+        }
+        
+        .notification.info {
+            background-color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -491,28 +600,28 @@
     <header>
         <div class="header-top">
             <div class="logo">
-                <i class="fas fa-barcode"></i>
-                <span>سكانر الباركود والكميات</span>
+                <i class="fas fa-shopping-cart"></i>
+                <span>Product Scanner System</span>
             </div>
             <div class="controls">
                 <button class="btn btn-accent" id="clearAllBtn">
-                    <i class="fas fa-trash-alt"></i> مسح الكل
+                    <i class="fas fa-trash-alt"></i> Clear All
                 </button>
                 <button class="btn btn-success" id="exportBtn">
-                    <i class="fas fa-file-export"></i> تصدير الجدول
+                    <i class="fas fa-file-export"></i> Export Table
                 </button>
             </div>
         </div>
         
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="scanner-tab">
-                <i class="fas fa-camera"></i> الماسح الضوئي
+                <i class="fas fa-camera"></i> Scanner
             </button>
             <button class="tab-btn" data-tab="sheet-tab">
-                <i class="fas fa-table"></i> الجدول التفاعلي
+                <i class="fas fa-table"></i> Interactive Table
             </button>
             <button class="tab-btn" data-tab="share-tab">
-                <i class="fas fa-share-alt"></i> مشاركة الجدول
+                <i class="fas fa-share-alt"></i> Share Table
             </button>
         </div>
     </header>
@@ -524,21 +633,21 @@
         <!-- تبويب الماسح الضوئي -->
         <div class="tab-content active" id="scanner-tab">
             <div class="scanner-section">
-                <h2><i class="fas fa-qrcode"></i> مسح الباركود بالكاميرا</h2>
-                <p>استخدم الكاميرا لمسح باركود المنتجات وسيتم إضافة الكمية تلقائياً إلى الجدول.</p>
+                <h2><i class="fas fa-qrcode"></i> Scan Products with Camera</h2>
+                <p>Use the camera to scan product codes (barcode, QR code) and they will be automatically added to the table.</p>
                 
                 <div class="scanner-container">
                     <div id="reader" class="pulse"></div>
                     
                     <div class="scanner-controls">
                         <button class="btn btn-primary" id="startScannerBtn">
-                            <i class="fas fa-play"></i> تشغيل الماسح
+                            <i class="fas fa-play"></i> Start Scanner
                         </button>
                         <button class="btn btn-danger" id="stopScannerBtn">
-                            <i class="fas fa-stop"></i> إيقاف الماسح
+                            <i class="fas fa-stop"></i> Stop Scanner
                         </button>
                         <button class="btn btn-accent" id="addManualBtn">
-                            <i class="fas fa-plus"></i> إضافة يدويًا
+                            <i class="fas fa-plus"></i> Add Manually
                         </button>
                     </div>
                 </div>
@@ -548,13 +657,10 @@
             
             <div class="sheet-section">
                 <div class="sheet-header">
-                    <div class="sheet-title">
-                        المنتجات المضافة
-                        <span class="total-count" id="totalProducts">0 منتج</span>
-                    </div>
+                    <div class="sheet-title">Recently Added Products</div>
                     <div class="controls">
                         <button class="btn btn-primary" id="addRowBtn">
-                            <i class="fas fa-plus"></i> إضافة صف
+                            <i class="fas fa-plus"></i> Add Row
                         </button>
                     </div>
                 </div>
@@ -564,9 +670,12 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="55%">باركود المنتج</th>
-                                <th width="25%">الكمية</th>
-                                <th width="15%">إجراءات</th>
+                                <th width="20%">Product Code</th>
+                                <th width="25%">Product Name</th>
+                                <th width="15%">Price</th>
+                                <th width="15%">Quantity</th>
+                                <th width="15%">Total</th>
+                                <th width="10%">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -581,16 +690,16 @@
         <div class="tab-content" id="sheet-tab">
             <div class="sheet-section">
                 <div class="sheet-header">
-                    <div class="sheet-title">
-                        جدول الباركود والكميات الكامل
-                        <span class="total-count" id="fullTotalProducts">0 منتج</span>
-                    </div>
+                    <div class="sheet-title">Complete Products Table</div>
                     <div class="controls">
                         <button class="btn btn-primary" id="addRowSheetBtn">
-                            <i class="fas fa-plus"></i> إضافة صف
+                            <i class="fas fa-plus"></i> Add Row
                         </button>
                         <button class="btn btn-success" id="calculateTotalBtn">
-                            <i class="fas fa-calculator"></i> حساب الإجمالي
+                            <i class="fas fa-calculator"></i> Calculate Total
+                        </button>
+                        <button class="btn btn-warning" id="saveDataBtn">
+                            <i class="fas fa-save"></i> Save Data
                         </button>
                     </div>
                 </div>
@@ -600,14 +709,25 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="60%">باركود المنتج</th>
-                                <th width="25%">الكمية</th>
-                                <th width="10%">إجراءات</th>
+                                <th width="15%">Product Code</th>
+                                <th width="25%">Product Name</th>
+                                <th width="15%">Category</th>
+                                <th width="10%">Price</th>
+                                <th width="10%">Quantity</th>
+                                <th width="10%">Total</th>
+                                <th width="10%">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="fullSheetBody">
                             <!-- سيتم ملؤه بنفس بيانات productsTable -->
                         </tbody>
+                        <tfoot id="tableFooter">
+                            <tr>
+                                <td colspan="6" style="text-align: right; font-weight: 700;">Grand Total:</td>
+                                <td id="grandTotal" style="font-weight: 700;">0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -616,44 +736,44 @@
         <!-- تبويب المشاركة -->
         <div class="tab-content" id="share-tab">
             <div class="share-section">
-                <h2><i class="fas fa-share-alt"></i> مشاركة جدول الباركود والكميات</h2>
-                <p>يمكنك مشاركة جدول الباركود والكميات مع الآخرين عن طريق الروابط التالية:</p>
+                <h2><i class="fas fa-share-alt"></i> Share Products Table</h2>
+                <p>You can share the products table with others using the following links:</p>
                 
                 <div class="share-controls">
                     <div class="share-options">
                         <div class="share-link">
-                            <input type="text" id="jsonLink" readonly value="سيتم إنشاء الرابط بعد حفظ الجدول">
+                            <input type="text" id="jsonLink" readonly value="Link will be generated after saving the table">
                             <button class="btn btn-primary" id="copyJsonBtn">
-                                <i class="fas fa-copy"></i> نسخ
+                                <i class="fas fa-copy"></i> Copy
                             </button>
                         </div>
                         
                         <div class="share-link">
-                            <input type="text" id="csvLink" readonly value="سيتم إنشاء الرابط بعد حفظ الجدول">
+                            <input type="text" id="csvLink" readonly value="Link will be generated after saving the table">
                             <button class="btn btn-primary" id="copyCsvBtn">
-                                <i class="fas fa-copy"></i> نسخ
+                                <i class="fas fa-copy"></i> Copy
                             </button>
                         </div>
                     </div>
                     
                     <div class="controls" style="justify-content: center;">
                         <button class="btn btn-success" id="generateLinksBtn">
-                            <i class="fas fa-link"></i> إنشاء روابط المشاركة
+                            <i class="fas fa-link"></i> Generate Share Links
                         </button>
                         <button class="btn btn-accent" id="saveToFileBtn">
-                            <i class="fas fa-download"></i> حفظ كملف
+                            <i class="fas fa-download"></i> Save as File
                         </button>
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
-                        <h3><i class="fas fa-info-circle"></i> معلومات المشاركة</h3>
-                        <p>• روابط المشاركة صالحة لمدة 30 يومًا.</p>
-                        <p>• يمكن للمستلمين عرض وتحميل الجدول ولكن لا يمكنهم تعديله.</p>
-                        <p>• لتمكين التعديل المشترك، احفظ الجدول إلى Google Sheets.</p>
+                        <h3><i class="fas fa-info-circle"></i> Sharing Information</h3>
+                        <p>• Sharing links are valid for 30 days.</p>
+                        <p>• Recipients can view and download the table but cannot edit it.</p>
+                        <p>• To enable shared editing, save the table to Google Sheets.</p>
                         
                         <div style="text-align: center; margin-top: 15px;">
                             <button class="btn btn-primary" id="openGoogleSheetsBtn">
-                                <i class="fab fa-google"></i> فتح في Google Sheets
+                                <i class="fab fa-google"></i> Open in Google Sheets
                             </button>
                         </div>
                     </div>
@@ -663,8 +783,11 @@
     </div>
     
     <footer>
-        <p>© 2023 نظام سكانر الباركود والكميات | تم التطوير لمسح وإدارة المنتجات بسهولة</p>
+        <p>© 2023 Product Scanner System | Developed for easy product scanning and management</p>
     </footer>
+
+    <!-- إشعارات صغيرة -->
+    <div id="notification" class="notification"></div>
 
     <script>
         // بيانات التطبيق
@@ -675,13 +798,57 @@
         
         // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', function() {
+            // تحميل البيانات المحفوظة من localStorage
+            loadSavedData();
+            
             initTabs();
             initTable();
             initScanner();
             initButtons();
             updateFullSheetTable();
-            updateTotalCount();
+            calculateGrandTotal();
+            
+            // إظهار إشعار التحميل
+            showNotification('Data loaded from local storage', 'success');
         });
+        
+        // تحميل البيانات المحفوظة
+        function loadSavedData() {
+            const savedData = localStorage.getItem('productScannerData');
+            if (savedData) {
+                try {
+                    products = JSON.parse(savedData);
+                    rowCounter = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                    
+                    // ملء الجدول بالبيانات المحفوظة
+                    products.forEach(product => {
+                        addRowToTable(product, false);
+                    });
+                    
+                    console.log(`Loaded ${products.length} products from storage`);
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                    products = [];
+                    rowCounter = 1;
+                }
+            }
+        }
+        
+        // حفظ البيانات تلقائياً
+        function saveDataToStorage() {
+            try {
+                localStorage.setItem('productScannerData', JSON.stringify(products));
+                console.log(`Saved ${products.length} products to storage`);
+                
+                // إظهار إشعار حفظ صغير
+                showNotification('Data saved automatically', 'info');
+                return true;
+            } catch (e) {
+                console.error('Error saving data:', e);
+                showNotification('Error saving data', 'error');
+                return false;
+            }
+        }
         
         // تهيئة نظام التبويب
         function initTabs() {
@@ -713,35 +880,25 @@
                     const row = e.target.closest('tr');
                     const rowId = parseInt(row.cells[0].textContent);
                     
-                    if (confirm(`هل تريد حذف الباركود رقم ${rowId}؟`)) {
+                    if (confirm(`Delete product #${rowId}?`)) {
+                        // إزالة المنتج من المصفوفة
+                        const index = products.findIndex(p => p.id === rowId);
+                        if (index !== -1) {
+                            products.splice(index, 1);
+                        }
+                        
                         row.remove();
                         updateRowNumbers();
                         updateFullSheetTable();
-                        updateTotalCount();
-                        showMessage('تم حذف الباركود بنجاح', 'success');
+                        calculateGrandTotal();
+                        saveDataToStorage();
+                        showMessage('Product deleted successfully', 'success');
                     }
                 }
                 
-                // تحرير الباركود
-                if (e.target.classList.contains('barcode-editable')) {
-                    makeBarcodeEditable(e.target);
-                }
-                
-                // زيادة/تقليل الكمية
-                if (e.target.classList.contains('quantity-inc')) {
-                    const quantitySpan = e.target.closest('.counter').querySelector('.quantity-value');
-                    let currentQty = parseInt(quantitySpan.textContent) || 0;
-                    quantitySpan.textContent = currentQty + 1;
-                    updateTotalCount();
-                }
-                
-                if (e.target.classList.contains('quantity-dec')) {
-                    const quantitySpan = e.target.closest('.counter').querySelector('.quantity-value');
-                    let currentQty = parseInt(quantitySpan.textContent) || 0;
-                    if (currentQty > 1) {
-                        quantitySpan.textContent = currentQty - 1;
-                        updateTotalCount();
-                    }
+                // تحويل الخلايا القابلة للتحرير
+                if (e.target.classList.contains('editable')) {
+                    makeCellEditable(e.target);
                 }
             });
             
@@ -749,9 +906,12 @@
             updateRowNumbers();
         }
         
-        // جعل خلية الباركود قابلة للتحرير
-        function makeBarcodeEditable(cell) {
+        // جعل الخلية قابلة للتحرير
+        function makeCellEditable(cell) {
             const originalValue = cell.textContent;
+            const field = cell.getAttribute('data-field');
+            const row = cell.closest('tr');
+            const rowId = parseInt(row.cells[0].textContent);
             
             // إنشاء حقل إدخال
             const input = document.createElement('input');
@@ -761,8 +921,7 @@
             input.style.border = 'none';
             input.style.padding = '5px';
             input.style.fontSize = 'inherit';
-            input.style.fontFamily = 'monospace';
-            input.style.letterSpacing = '1px';
+            input.style.fontFamily = 'inherit';
             
             // مسح محتوى الخلية وإضافة حقل الإدخال
             cell.textContent = '';
@@ -772,21 +931,54 @@
             // حفظ التغييرات عند الضغط على Enter
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    cell.textContent = input.value;
-                    cell.classList.add('barcode-editable');
-                    updateFullSheetTable();
+                    finishEditing(cell, input.value, field, rowId);
                 } else if (e.key === 'Escape') {
                     cell.textContent = originalValue;
-                    cell.classList.add('barcode-editable');
                 }
             });
             
             // حفظ التغييرات عند فقدان التركيز
             input.addEventListener('blur', function() {
-                cell.textContent = input.value;
-                cell.classList.add('barcode-editable');
-                updateFullSheetTable();
+                finishEditing(cell, input.value, field, rowId);
             });
+        }
+        
+        // إنهاء تحرير الخلية
+        function finishEditing(cell, newValue, field, rowId) {
+            cell.textContent = newValue;
+            
+            // تحديث بيانات المنتج في المصفوفة
+            const productIndex = products.findIndex(p => p.id === rowId);
+            if (productIndex !== -1) {
+                products[productIndex][field] = newValue;
+                
+                // تحديث القيم الحسابية إذا لزم الأمر
+                if (field === 'price' || field === 'quantity') {
+                    updateRowTotal(cell.closest('tr'));
+                    
+                    // إعادة حساب المجموع في بيانات المنتج
+                    const price = parseFloat(products[productIndex].price) || 0;
+                    const quantity = parseInt(products[productIndex].quantity) || 0;
+                    products[productIndex].total = (price * quantity).toFixed(2);
+                }
+            }
+            
+            updateFullSheetTable();
+            calculateGrandTotal();
+            saveDataToStorage();
+        }
+        
+        // تحديث المجموع للصف
+        function updateRowTotal(row) {
+            const priceCell = row.querySelector('[data-field="price"]');
+            const quantityCell = row.querySelector('[data-field="quantity"]');
+            const totalCell = row.querySelector('[data-field="total"]');
+            
+            const price = parseFloat(priceCell.textContent) || 0;
+            const quantity = parseInt(quantityCell.textContent) || 0;
+            const total = price * quantity;
+            
+            totalCell.textContent = total.toFixed(2);
         }
         
         // تحديث أرقام الصفوف
@@ -810,7 +1002,7 @@
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 if (scannerActive) {
                     stopScanner();
-                    showMessage(`تم مسح الباركود: ${decodedText}`, 'success');
+                    showMessage(`Product scanned: ${decodedText}`, 'success');
                     addProductFromScan(decodedText);
                     
                     // إعادة تشغيل الماسح بعد ثانيتين
@@ -827,13 +1019,13 @@
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
                 .then(() => {
                     scannerActive = true;
-                    document.getElementById('scannerResult').textContent = 'جاري المسح...';
+                    document.getElementById('scannerResult').textContent = 'Scanning...';
                     document.getElementById('scannerResult').style.color = 'var(--accent-color)';
-                    showMessage('تم تشغيل الماسح الضوئي بنجاح', 'success');
+                    showMessage('Scanner started successfully', 'success');
                 })
                 .catch(err => {
-                    console.error("خطأ في تشغيل الماسح:", err);
-                    showMessage('فشل تشغيل الماسح الضوئي. تأكد من صلاحية الكاميرا.', 'error');
+                    console.error("Scanner start error:", err);
+                    showMessage('Failed to start scanner. Please check camera permissions.', 'error');
                 });
         }
         
@@ -843,67 +1035,83 @@
                 html5QrCode.stop()
                     .then(() => {
                         scannerActive = false;
-                        document.getElementById('scannerResult').textContent = 'الماسح متوقف';
+                        document.getElementById('scannerResult').textContent = 'Scanner stopped';
                         document.getElementById('scannerResult').style.color = 'var(--danger-color)';
                     })
                     .catch(err => {
-                        console.error("خطأ في إيقاف الماسح:", err);
+                        console.error("Scanner stop error:", err);
                     });
             }
         }
         
         // إضافة منتج من المسح الضوئي
-        function addProductFromScan(barcode) {
-            // البحث عما إذا كان الباركود موجودًا بالفعل
-            const existingRow = Array.from(document.querySelectorAll('#tableBody .barcode-cell'))
-                .find(cell => cell.textContent === barcode);
+        function addProductFromScan(code) {
+            // البحث عما إذا كان المنتج موجودًا بالفعل
+            const existingRow = Array.from(document.querySelectorAll('#tableBody [data-field="code"]'))
+                .find(cell => cell.textContent === code);
             
             if (existingRow) {
-                // زيادة الكمية إذا كان الباركود موجودًا
+                // زيادة الكمية إذا كان المنتج موجودًا
                 const row = existingRow.closest('tr');
-                const quantitySpan = row.querySelector('.quantity-value');
-                const currentQty = parseInt(quantitySpan.textContent) || 0;
-                quantitySpan.textContent = currentQty + 1;
+                const quantityCell = row.querySelector('[data-field="quantity"]');
+                const currentQty = parseInt(quantityCell.textContent) || 0;
+                quantityCell.textContent = currentQty + 1;
+                updateRowTotal(row);
+                
+                // تحديث بيانات المنتج في المصفوفة
+                const rowId = parseInt(row.cells[0].textContent);
+                const productIndex = products.findIndex(p => p.id === rowId);
+                if (productIndex !== -1) {
+                    products[productIndex].quantity = currentQty + 1;
+                    const price = parseFloat(products[productIndex].price) || 0;
+                    products[productIndex].total = (price * (currentQty + 1)).toFixed(2);
+                }
                 
                 // تأثير تمييز
                 row.classList.add('highlight');
                 setTimeout(() => row.classList.remove('highlight'), 1500);
                 
-                showMessage('تم زيادة كمية الباركود الموجود', 'success');
+                showMessage('Product quantity increased', 'success');
             } else {
-                // إضافة باركود جديد
+                // إضافة منتج جديد مع بيانات افتراضية
                 const newProduct = {
                     id: rowCounter++,
-                    barcode: barcode,
-                    quantity: 1
+                    code: code,
+                    name: 'New Product', // سيتم تعديله يدويًا
+                    price: '0.00', // سيتم إدخاله يدويًا
+                    quantity: 1, // سيتم تعديله تلقائيًا
+                    total: '0.00'
                 };
                 
+                newProduct.total = (parseFloat(newProduct.price) * newProduct.quantity).toFixed(2);
                 products.push(newProduct);
+                
                 addRowToTable(newProduct);
-                showMessage('تم إضافة باركود جديد', 'success');
+                showMessage('New product added', 'success');
             }
             
             updateFullSheetTable();
-            updateTotalCount();
+            calculateGrandTotal();
+            saveDataToStorage();
         }
         
         // إضافة صف إلى الجدول
-        function addRowToTable(product) {
+        function addRowToTable(product, saveToStorage = true) {
             const tableBody = document.getElementById('tableBody');
             const newRow = document.createElement('tr');
             
             newRow.innerHTML = `
                 <td>${product.id}</td>
-                <td class="barcode-cell barcode-editable" data-field="barcode">${product.barcode}</td>
-                <td class="quantity-cell">
-                    <div class="counter">
-                        <button class="counter-btn quantity-dec">-</button>
-                        <span class="quantity-value">${product.quantity}</span>
-                        <button class="counter-btn quantity-inc">+</button>
-                    </div>
-                </td>
+                <td class="editable" data-field="code">${product.code}</td>
+                <td class="editable" data-field="name">${product.name}</td>
+                <td class="editable" data-field="price">${product.price}</td>
+                <td class="editable" data-field="quantity">${product.quantity}</td>
+                <td data-field="total">${product.total}</td>
                 <td class="actions-cell">
-                    <button class="action-btn delete" title="حذف">
+                    <button class="action-btn edit" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete" title="Delete">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -911,6 +1119,10 @@
             
             tableBody.appendChild(newRow);
             updateRowNumbers();
+            
+            if (saveToStorage) {
+                saveDataToStorage();
+            }
         }
         
         // تحديث جدول البيانات الكامل
@@ -922,15 +1134,17 @@
             const rows = document.querySelectorAll('#tableBody tr');
             rows.forEach(row => {
                 const newRow = document.createElement('tr');
-                const barcode = row.querySelector('.barcode-cell').textContent;
-                const quantity = row.querySelector('.quantity-value').textContent;
                 
                 newRow.innerHTML = `
                     <td>${row.cells[0].textContent}</td>
-                    <td class="barcode-cell">${barcode}</td>
-                    <td class="quantity-cell">${quantity}</td>
+                    <td>${row.cells[1].textContent}</td>
+                    <td>${row.cells[2].textContent}</td>
+                    <td>General</td>
+                    <td>${row.cells[3].textContent}</td>
+                    <td>${row.cells[4].textContent}</td>
+                    <td>${row.cells[5].textContent}</td>
                     <td class="actions-cell">
-                        <button class="action-btn delete" title="حذف">
+                        <button class="action-btn delete" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -938,24 +1152,19 @@
                 
                 fullSheetBody.appendChild(newRow);
             });
-            
-            // تحديث العداد في الجدول الكامل
-            document.getElementById('fullTotalProducts').textContent = `${rows.length} منتج`;
         }
         
-        // تحديث العدد الكلي للمنتجات
-        function updateTotalCount() {
-            const rows = document.querySelectorAll('#tableBody tr');
-            const totalItems = rows.length;
+        // حساب المجموع الكلي
+        function calculateGrandTotal() {
+            const totalCells = document.querySelectorAll('[data-field="total"]');
+            let grandTotal = 0;
             
-            // حساب مجموع الكميات
-            let totalQuantity = 0;
-            rows.forEach(row => {
-                const quantity = parseInt(row.querySelector('.quantity-value').textContent) || 0;
-                totalQuantity += quantity;
+            totalCells.forEach(cell => {
+                grandTotal += parseFloat(cell.textContent) || 0;
             });
             
-            document.getElementById('totalProducts').textContent = `${totalItems} منتج (${totalQuantity} قطعة)`;
+            document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+            saveDataToStorage();
         }
         
         // تهيئة الأزرار
@@ -966,21 +1175,29 @@
             
             // إضافة يدويًا
             document.getElementById('addManualBtn').addEventListener('click', function() {
-                const barcode = prompt('أدخل باركود المنتج:');
-                if (barcode) {
-                    addProductFromScan(barcode);
+                const productCode = prompt('Enter product code (barcode):');
+                if (productCode) {
+                    addProductFromScan(productCode);
+                }
+            });
+            
+            // حفظ البيانات يدويًا
+            document.getElementById('saveDataBtn').addEventListener('click', function() {
+                if (saveDataToStorage()) {
+                    showMessage('Data saved successfully', 'success');
                 }
             });
             
             // مسح الكل
             document.getElementById('clearAllBtn').addEventListener('click', function() {
-                if (confirm('هل تريد مسح جميع الباركودات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                if (confirm('Delete all products? This action cannot be undone.')) {
                     document.getElementById('tableBody').innerHTML = '';
                     products = [];
                     rowCounter = 1;
                     updateFullSheetTable();
-                    updateTotalCount();
-                    showMessage('تم مسح جميع الباركودات', 'success');
+                    calculateGrandTotal();
+                    saveDataToStorage();
+                    showMessage('All products deleted', 'success');
                 }
             });
             
@@ -1006,9 +1223,11 @@
             document.getElementById('openGoogleSheetsBtn').addEventListener('click', openInGoogleSheets);
             
             // حساب الإجمالي
-            document.getElementById('calculateTotalBtn').addEventListener('click', function() {
-                updateTotalCount();
-                showMessage('تم حساب الإجمالي بنجاح', 'success');
+            document.getElementById('calculateTotalBtn').addEventListener('click', calculateGrandTotal);
+            
+            // حفظ البيانات عند إغلاق الصفحة
+            window.addEventListener('beforeunload', function() {
+                saveDataToStorage();
             });
         }
         
@@ -1016,31 +1235,34 @@
         function addNewRow() {
             const newProduct = {
                 id: rowCounter++,
-                barcode: `BAR${Date.now().toString().slice(-8)}`,
-                quantity: 1
+                code: `NEW${Date.now().toString().slice(-6)}`,
+                name: 'New Product',
+                price: '0.00',
+                quantity: '1',
+                total: '0.00'
             };
             
             addRowToTable(newProduct);
             updateFullSheetTable();
-            updateTotalCount();
-            showMessage('تم إضافة صف جديد', 'success');
+            calculateGrandTotal();
+            showMessage('New row added', 'success');
         }
         
         // تصدير الجدول
         function exportTable() {
             const rows = [];
-            const header = ['#', 'باركود المنتج', 'الكمية'];
+            const header = ['#', 'Product Code', 'Product Name', 'Price', 'Quantity', 'Total'];
             rows.push(header.join(','));
             
             const tableRows = document.querySelectorAll('#tableBody tr');
             tableRows.forEach(row => {
-                const barcode = row.querySelector('.barcode-cell').textContent;
-                const quantity = row.querySelector('.quantity-value').textContent;
-                
                 const rowData = [
                     row.cells[0].textContent,
-                    barcode,
-                    quantity
+                    row.cells[1].textContent,
+                    row.cells[2].textContent,
+                    row.cells[3].textContent,
+                    row.cells[4].textContent,
+                    row.cells[5].textContent
                 ];
                 rows.push(rowData.join(','));
             });
@@ -1051,14 +1273,14 @@
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
-            link.setAttribute('download', 'باركود_كميات_' + new Date().toISOString().slice(0, 10) + '.csv');
+            link.setAttribute('download', 'products_' + new Date().toISOString().slice(0, 10) + '.csv');
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showMessage('تم تصدير الجدول بنجاح', 'success');
+            showMessage('Table exported successfully', 'success');
         }
         
         // إنشاء روابط المشاركة
@@ -1074,7 +1296,7 @@
             document.getElementById('jsonLink').value = `${baseUrl}#data=${btoa(jsonData)}`;
             document.getElementById('csvLink').value = `${baseUrl}#csv=${btoa(csvData)}`;
             
-            showMessage('تم إنشاء روابط المشاركة بنجاح', 'success');
+            showMessage('Share links generated successfully', 'success');
         }
         
         // الحصول على بيانات الجدول
@@ -1083,13 +1305,13 @@
             const rows = document.querySelectorAll('#tableBody tr');
             
             rows.forEach(row => {
-                const barcode = row.querySelector('.barcode-cell').textContent;
-                const quantity = row.querySelector('.quantity-value').textContent;
-                
                 tableData.push({
                     id: row.cells[0].textContent,
-                    barcode: barcode,
-                    quantity: quantity
+                    code: row.cells[1].textContent,
+                    name: row.cells[2].textContent,
+                    price: row.cells[3].textContent,
+                    quantity: row.cells[4].textContent,
+                    total: row.cells[5].textContent
                 });
             });
             
@@ -1116,11 +1338,11 @@
             
             navigator.clipboard.writeText(input.value)
                 .then(() => {
-                    showMessage('تم نسخ الرابط إلى الحافظة', 'success');
+                    showMessage('Link copied to clipboard', 'success');
                 })
                 .catch(err => {
-                    console.error('فشل نسخ الرابط: ', err);
-                    showMessage('فشل نسخ الرابط', 'error');
+                    console.error('Failed to copy link: ', err);
+                    showMessage('Failed to copy link', 'error');
                 });
         }
         
@@ -1133,19 +1355,19 @@
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
-            link.setAttribute('download', 'باركود_كميات_' + new Date().toISOString().slice(0, 10) + '.json');
+            link.setAttribute('download', 'products_' + new Date().toISOString().slice(0, 10) + '.json');
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showMessage('تم حفظ الجدول كملف JSON', 'success');
+            showMessage('Table saved as JSON file', 'success');
         }
         
         // فتح في Google Sheets (محاكاة)
         function openInGoogleSheets() {
-            showMessage('سيتم فتح الجدول في Google Sheets. في التطبيق الحقيقي، سيتم رفع البيانات إلى Google Sheets.', 'success');
+            showMessage('Opening in Google Sheets. In a real app, data would be uploaded to Google Sheets.', 'success');
             
             // محاكاة التأخير
             setTimeout(() => {
@@ -1170,6 +1392,18 @@
             // إخفاء الرسالة بعد 3 ثوانٍ
             setTimeout(() => {
                 messageEl.className = 'message';
+            }, 3000);
+        }
+        
+        // عرض إشعار صغير
+        function showNotification(text, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = text;
+            notification.className = `notification ${type} show`;
+            
+            // إخفاء الإشعار بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.classList.remove('show');
             }, 3000);
         }
     </script>
